@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JBC Customizable 50K Roulette V14 – Extra Large Center Photo</title>
+<style>
+:root{--bg:#eef0f5;--panel:#fff;--ink:#202b45;--accent:#ef8b00;--muted:#667085}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial,sans-serif}
+.toolbar{height:58px;background:#fff;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:8px 14px;box-shadow:0 2px 8px #0002;position:sticky;top:0;z-index:10}
+.toolbar button{background:transparent;color:#172033;font-weight:600;margin:0;padding:10px 13px}.toolbar button:hover{background:#f0f2f8}
+main{max-width:1500px;margin:20px auto;padding:0 16px}.layout{display:grid;grid-template-columns:minmax(380px,1.25fr) minmax(350px,.8fr);gap:18px;align-items:start}
+.wheelpanel,.sidepanel{background:var(--panel);border-radius:12px;box-shadow:0 2px 12px #18243b18;padding:16px}
+.wheelpanel{min-height:690px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.wheelbox{position:relative;width:min( min(76vw,760px),100%);aspect-ratio:1;display:grid;place-items:center}
+#wheel{width:100%;height:100%;transition:none;filter:drop-shadow(0 5px 5px #0003)}
+.pointer{position:absolute;right:-9px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:24px solid transparent;border-bottom:24px solid transparent;border-right:0;border-left:45px solid #fff;filter:drop-shadow(0 2px 3px #0008);z-index:3}
+.center{position:absolute;width:48%;height:48%;border-radius:50%;background:#fff;border:10px solid var(--ink);display:grid;place-items:center;overflow:hidden;font-size:clamp(22px,3.5vw,40px);font-weight:900;z-index:2;box-shadow:0 4px 16px #0004}
+.center img{width:100%;height:100%;object-fit:cover;display:none}
+#winner{margin:18px 0 8px;padding:16px 22px;min-height:65px;width:min(95%,650px);border:2px solid #f3bd72;border-radius:10px;background:#fff8ec;text-align:center;font-size:clamp(20px,2.5vw,34px);font-weight:800;overflow-wrap:anywhere}
+#spin{width:min(95%,650px);font-size:19px;padding:16px;background:var(--accent)}
+.sidepanel{padding:0;overflow:hidden}.tabs{display:flex;border-bottom:2px solid #e5e7eb}.tabs button{flex:1;margin:0;border-radius:0;background:#fff;color:#555;padding:16px;font-size:16px}.tabs button.active{border-bottom:3px solid #34445e;color:#18243b}
+.tabcontent{padding:18px}.entrytools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.entrytools button,.action{background:#ececff;color:#5146bd;padding:10px 12px;margin:0}
+textarea{width:100%;height:610px;resize:vertical;border:1px solid #d1d5db;border-radius:7px;padding:12px;font:16px/1.65 Arial;color:#444}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.stat{background:#f0f2f8;padding:8px 12px;border-radius:8px}.stat b{font-size:19px}
+button{border:0;border-radius:7px;padding:12px 15px;cursor:pointer;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}
+.status{background:#f0f2f8;border-radius:8px;padding:11px;margin:10px 0;font-size:13px;color:#344054}
+.results{max-height:570px;overflow:auto}.result{padding:12px;border-bottom:1px solid #e7e9ef;display:flex;gap:10px}.result b{flex:1}.hidden{display:none!important}
+dialog{border:0;border-radius:14px;box-shadow:0 12px 50px #0005;width:min(620px,94vw);padding:0;color:var(--ink)}dialog::backdrop{background:#10182888}.modalhead{padding:18px 22px;background:#f6f7fb;display:flex;justify-content:space-between;align-items:center}.modalbody{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field input,.field select{padding:9px;border:1px solid #cbd5e1;border-radius:7px;min-width:0}.modalfoot{padding:15px 20px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #e5e7eb}.primary{background:var(--accent);color:white}.secondary{background:#e8edf5;color:#25324a}.note{font-size:12px;color:var(--muted);line-height:1.5}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.wheelpanel{min-height:unset}.wheelbox{width:min(88vw,620px)}textarea{height:330px}.toolbar{height:auto;position:relative}.modalbody{grid-template-columns:1fr}}
+</style></head><body>
+<nav class="toolbar">
+<button id="customizeBtn">🎨 Customize</button><button id="newBtn">▣ New</button><button id="openBtn">📂 Open</button><button id="saveBtn">💾 Save</button><button id="shareBtn">↗ Share</button><button id="galleryBtn">⌕ Gallery</button><button id="fullscreenBtn">⛶</button><button id="moreBtn">⋮ More</button>
+<input id="openFile" type="file" accept=".txt,.csv,.json" hidden>
+</nav>
+<main><div class="layout">
+<section class="wheelpanel">
+<div id="winner">Click SPIN to choose one winner</div>
+<button id="spin">SPIN THE WHEEL</button>
+<div class="status" id="spinStatus">Load your entries on the right to begin.</div>
+<div class="wheelbox"><canvas id="wheel" width="900" height="900"></canvas><div class="pointer"></div><div class="center" id="centerMark"><span id="centerText">JBC</span><img id="centerImage"></div></div>
+</section>
+<section class="sidepanel">
+<div class="tabs"><button id="entriesTab" class="active">Entries <span id="entryBadge">0</span></button><button id="resultsTab">Results <span id="resultBadge">0</span></button></div>
+<div id="entriesPane" class="tabcontent">
+<div class="entrytools"><button id="shuffleBtn">⤨ Shuffle</button><button id="sortBtn">↕ Sort</button><button id="imageBtn">▧ Add image ▾</button><input id="wheelImageFile" type="file" accept="image/*" hidden></div>
+<textarea id="entries" placeholder="Paste one name per line&#10;Juan Dela Cruz&#10;Maria Santos"></textarea>
+<div class="stats"><div class="stat"><b id="count">0</b><br>Entries loaded</div><div class="stat"><b>50,000</b><br>Maximum</div></div>
+<label><input id="dedupe" type="checkbox"> Remove duplicate names</label>
+<div class="entrytools" style="margin-top:12px"><button class="primary" id="loadBtn">LOAD ENTRIES</button><button id="clearBtn" class="secondary">CLEAR</button><button id="exportBtn" class="secondary">EXPORT CSV</button></div>
+<div class="status" id="loadStatus">Paste or open a TXT/CSV file, then click Load Entries.</div>
+<p class="note">Duplicates are allowed by default. Each repeated entry receives another chance. Only one winner is selected per spin. Maximum: 50,000 entries.</p>
+</div>
+<div id="resultsPane" class="tabcontent hidden"><div class="stats"><div class="stat"><b id="winCount">0</b><br>Winners drawn</div></div><div id="resultsList" class="results">No winners yet.</div><div class="entrytools" style="margin-top:12px"><button id="exportResults" class="action">Export results CSV</button><button id="resetResults" class="secondary">Reset results</button></div></div>
+</section></div></main>
+<dialog id="customizeDialog">
+<div class="modalhead"><b>Customize your roulette</b><button id="closeCustomize" class="secondary">✕</button></div>
+<div class="modalbody">
+<label class="field">Wheel color theme<select id="theme"><option value="rainbow">Rainbow</option><option value="jbc">JBC Orange / Purple / Yellow</option><option value="ocean">Ocean</option><option value="forest">Green</option><option value="mono">Black & Gold</option></select></label>
+<label class="field">Spin duration (seconds)<input id="duration" type="number" min="2" max="60" value="8"></label>
+<label class="field full">Maximum names visible on wheel <input id="maxWheelNames" type="range" min="4" max="1000" value="1000" oninput="document.getElementById('maxWheelNamesValue').textContent=this.value"><span id="maxWheelNamesValue">1000</span><span class="note">All entries remain eligible to win. This controls only how many names are drawn on the wheel for readability.</span></label>
+<label class="field">Page background<input id="bgColor" type="color" value="#eef0f5"></label>
+<label class="field">Wheel border color<input id="borderColor" type="color" value="#202b45"></label>
+<label class="field">Button color<input id="buttonColor" type="color" value="#ef8b00"></label>
+<label class="field">Center label<input id="centerInput" maxlength="12" value="JBC"></label>
+<label class="field">Center label color<input id="centerColor" type="color" value="#202b45"></label>
+<label class="field full">Photo in the middle of the wheel<input id="logoUpload" type="file" accept="image/*"></label>
+<div class="field full" style="display:flex;flex-direction:row;align-items:center;gap:12px">
+<img id="logoPreview" alt="Center photo preview" style="width:76px;height:76px;object-fit:cover;border-radius:50%;border:4px solid #202b45;background:#fff;display:none">
+<button type="button" id="removeLogo" class="secondary">Remove center photo</button>
+</div>
+<label class="field full">Upload page background image<input id="bgUpload" type="file" accept="image/*"></label>
+<p class="note full">Images and colors are applied locally in this browser. Use Save to export your entries and customization settings together.</p>
+</div><div class="modalfoot"><button id="resetStyle" class="secondary">Reset design</button><button id="applyStyle" class="primary">Apply customization</button></div>
+</dialog>
+
+<dialog id="winnerDialog" style="text-align:center;max-width:560px">
+  <div class="modalhead"><b>🎉 SELECTED WINNER</b><button id="closeWinner" class="secondary">✕</button></div>
+  <div style="padding:30px 24px">
+    <div style="font-size:13px;letter-spacing:2px;color:#667085;margin-bottom:12px">CONGRATULATIONS!</div>
+    <div id="popupWinnerName" style="font-size:clamp(26px,5vw,42px);font-weight:900;overflow-wrap:anywhere;color:#202b45;margin:10px 0 26px">WINNER</div>
+    <button id="removeWinnerBtn" class="primary" style="font-size:17px;padding:14px 24px">REMOVE WINNER FROM ENTRIES</button>
+    <p class="note" style="margin-top:14px">This removes only the selected entry. Other entries, including duplicate names, remain eligible.</p>
+    <button id="keepWinnerBtn" class="secondary">Keep in entries</button>
+  </div>
+</dialog>
+<script>
+const $=id=>document.getElementById(id);let entries=[],results=[],busy=false,rotation=0,backgroundImage='',logoData='',pendingWinnerIndex=-1;
+const canvas=$('wheel'),ctx=canvas.getContext('2d');
+const themes={rainbow:[0,360],jbc:[24,280,52,320,42,265],ocean:[190,205,220,235,250,175],forest:[105,125,145,85,160,45],mono:[42,0,48,18,55,10]};
+function colorAt(i,n){let a=themes[$('theme').value]||themes.rainbow;if(a.length===2)return `hsl(${a[0]+(a[1]-a[0])*i/n} 82% 54%)`;return `hsl(${a[i%a.length]} 78% ${$('theme').value==='mono'? (i%2?32:55):55}%)`}
+function drawWheel(){
+ let maxVisible=Math.max(4,Math.min(1000,Number($('maxWheelNames')?.value||1000)));
+ let shown=entries.slice(0,maxVisible), n=Math.max(4,shown.length), r=425, step=2*Math.PI/n;
+ ctx.clearRect(0,0,900,900);
+ for(let i=0;i<n;i++){
+  let a=-Math.PI/2+i*step;
+  ctx.beginPath();ctx.moveTo(450,450);ctx.arc(450,450,r,a,a+step+.002);ctx.closePath();
+  ctx.fillStyle=colorAt(i,n);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=n>300?1:2;ctx.stroke();
+  if(i<shown.length){
+   ctx.save();ctx.translate(450,450);ctx.rotate(a+step/2);
+   ctx.textAlign='right';ctx.textBaseline='middle';
+   let fs=n>700?5:n>400?6:n>200?8:n>100?10:n>50?12:15;
+   ctx.font=`${n>250?'500':'600'} ${fs}px Arial`;
+   ctx.fillStyle='#fff';ctx.shadowColor='#172033';ctx.shadowBlur=2;
+   let label=String(shown[i]).replace(/\s+/g,' ').trim();
+   let maxChars=n>500?22:n>250?28:38;
+   if(label.length>maxChars)label=label.slice(0,maxChars-1)+'…';
+   ctx.fillText(label, r-12, 0);
+   ctx.restore();
+  }
+ }
+ ctx.beginPath();ctx.arc(450,450,r,0,Math.PI*2);ctx.lineWidth=12;ctx.strokeStyle=$('borderColor').value;ctx.stroke();
+}
+function update(){ $('count').textContent=entries.length.toLocaleString();$('entryBadge').textContent=entries.length;$('resultBadge').textContent=results.length;$('winCount').textContent=results.length;$('spin').disabled=!entries.length||busy;$('shuffleBtn').disabled=entries.length<2||busy;$('sortBtn').disabled=entries.length<2||busy;$('exportBtn').disabled=!entries.length;$('exportResults').disabled=!results.length;$('resetResults').disabled=!results.length;$('resultsList').innerHTML=results.length?results.map((x,i)=>`<div class="result"><span>${results.length-i}.</span><b>${safe(x.name)}</b><small>${safe(x.time)}</small></div>`).join(''):'No winners yet.'}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function randomInt(n){if(window.crypto?.getRandomValues){let a=new Uint32Array(1),lim=4294967296-4294967296%n;do{crypto.getRandomValues(a)}while(a[0]>=lim);return a[0]%n}return Math.floor(Math.random()*n)}
+function shuffle(){
+ // Fast Fisher–Yates: fetch random values in batches instead of calling
+ // crypto.getRandomValues once for every entry.
+ const n=entries.length;
+ if(n<2)return;
+ const values=new Uint32Array(n-1);
+ if(window.crypto?.getRandomValues){
+   for(let offset=0;offset<values.length;offset+=16384){
+     crypto.getRandomValues(values.subarray(offset,Math.min(offset+16384,values.length)));
+   }
+ }else{
+   for(let i=0;i<values.length;i++)values[i]=Math.floor(Math.random()*4294967296);
+ }
+ for(let i=n-1,k=0;i>0;i--,k++){
+   const j=values[k]%(i+1);
+   [entries[i],entries[j]]=[entries[j],entries[i]];
+ }
+}
+function download(text,name,type='text/plain'){let u=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function setTab(which){let res=which==='results';$('entriesPane').classList.toggle('hidden',res);$('resultsPane').classList.toggle('hidden',!res);$('entriesTab').classList.toggle('active',!res);$('resultsTab').classList.toggle('active',res)}
+function readImage(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>cb(r.result);r.readAsDataURL(file)}
+$('loadBtn').onclick=()=>{let a=$('entries').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);if($('dedupe').checked)a=[...new Set(a)];if(a.length>50000){$('loadStatus').textContent=`Too many entries (${a.length}). Maximum is 50,000.`;return}entries=a;results=[];$('winner').textContent='Click SPIN to choose one winner';$('loadStatus').textContent=`${entries.length.toLocaleString()} entries loaded.`;rotation=0;canvas.style.transform='rotate(0deg)';drawWheel();update()};
+$('clearBtn').onclick=()=>{$('entries').value='';entries=[];results=[];$('winner').textContent='Click SPIN to choose one winner';$('loadStatus').textContent='Entries cleared.';$('spinStatus').textContent='Load entries to begin.';drawWheel();update()};
+$('shuffleBtn').onclick=()=>{if(busy||entries.length<2)return;const t=performance.now();shuffle();$('entries').value=entries.join('\n');drawWheel();update();$('loadStatus').textContent=`${entries.length.toLocaleString()} entries shuffled in ${(performance.now()-t).toFixed(0)} ms.`};
+$('sortBtn').onclick=()=>{entries.sort((a,b)=>a.localeCompare(b));$('loadStatus').textContent='Entries sorted A–Z.';update()};
+$('spin').onclick=()=>{if(busy||!entries.length)return;let seconds=Number($('duration').value);if(!Number.isFinite(seconds)||seconds<2||seconds>60){$('spinStatus').textContent='Spin duration must be 2–60 seconds. Change it in Customize.';return}busy=true;update();$('winner').textContent='SPINNING…';$('spinStatus').textContent=`Spinning for ${seconds} seconds…`;let index=randomInt(entries.length),start=performance.now(),duration=seconds*1000,from=rotation,target=from+360*7+randomInt(360);rotation=target;function animate(now){let t=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,4);canvas.style.transform=`rotate(${from+(target-from)*ease}deg)`;if(t<1)requestAnimationFrame(animate);else{busy=false;let name=entries[index],time=new Date().toLocaleString();pendingWinnerIndex=index;$('winner').textContent=name;results.unshift({name,time,entry:index+1});$('popupWinnerName').textContent=name;$('winnerDialog').showModal();$('spinStatus').textContent=`One winner selected from ${entries.length.toLocaleString()} entries.`;update()}}requestAnimationFrame(animate)};
+
+$('closeWinner').onclick=()=>{$('winnerDialog').close();pendingWinnerIndex=-1};
+$('keepWinnerBtn').onclick=()=>{$('winnerDialog').close();pendingWinnerIndex=-1};
+$('removeWinnerBtn').onclick=()=>{if(pendingWinnerIndex>=0&&pendingWinnerIndex<entries.length){entries.splice(pendingWinnerIndex,1);$('entries').value=entries.join('\n');$('loadStatus').textContent=`Winner removed. ${entries.length.toLocaleString()} entries remaining.`;drawWheel();update()}$('winnerDialog').close();pendingWinnerIndex=-1};
+$('maxWheelNames').oninput=()=>{ $('maxWheelNamesValue').textContent=$('maxWheelNames').value;drawWheel() };$('entriesTab').onclick=()=>setTab('entries');$('resultsTab').onclick=()=>setTab('results');
+$('exportBtn').onclick=()=>download('Entry No.,Name\r\n'+entries.map((n,i)=>`${i+1},"${n.replace(/"/g,'""')}"`).join('\r\n'),'JBC_Entries.csv','text/csv');
+$('exportResults').onclick=()=>download('Draw No.,Winner,Time,Entry No.\r\n'+results.map((r,i)=>`${i+1},"${r.name.replace(/"/g,'""')}","${r.time}",${r.entry}`).join('\r\n'),'JBC_Winners.csv','text/csv');
+$('resetResults').onclick=()=>{results=[];$('winner').textContent='Click SPIN to choose one winner';update()};
+$('customizeBtn').onclick=()=>$('customizeDialog').showModal();$('closeCustomize').onclick=()=>$('customizeDialog').close();
+$('applyStyle').onclick=()=>{document.documentElement.style.setProperty('--bg',$('bgColor').value);document.documentElement.style.setProperty('--ink',$('centerColor').value);document.documentElement.style.setProperty('--accent',$('buttonColor').value);$('centerText').textContent=$('centerInput').value||'JBC';$('centerMark').style.borderColor=$('borderColor').value;document.body.style.backgroundImage=backgroundImage?`url(${backgroundImage})`:'';document.body.style.backgroundSize='cover';$('centerImage').style.display=logoData?'block':'none';$('centerImage').src=logoData;$('centerText').style.display=logoData?'none':'block';$('logoPreview').src=logoData;$('logoPreview').style.display=logoData?'block':'none';drawWheel();$('customizeDialog').close()};
+$('logoUpload').onchange=e=>readImage(e.target.files[0],d=>{logoData=d;$('logoPreview').src=d;$('logoPreview').style.display='block';$('centerImage').src=d;$('centerImage').style.display='block';$('centerText').style.display='none'});$('removeLogo').onclick=()=>{logoData='';$('logoUpload').value='';$('logoPreview').style.display='none';$('centerImage').style.display='none';$('centerText').style.display='block'};$('bgUpload').onchange=e=>readImage(e.target.files[0],d=>backgroundImage=d);
+$('resetStyle').onclick=()=>{backgroundImage='';logoData='';$('theme').value='rainbow';$('bgColor').value='#eef0f5';$('borderColor').value='#202b45';$('buttonColor').value='#ef8b00';$('centerInput').value='JBC';$('centerColor').value='#202b45';$('centerImage').style.display='none';$('centerText').style.display='block';$('logoPreview').style.display='none';$('logoUpload').value='';document.body.style.backgroundImage='';document.documentElement.style.setProperty('--bg','#eef0f5');document.documentElement.style.setProperty('--ink','#202b45');document.documentElement.style.setProperty('--accent','#ef8b00');$('centerText').textContent='JBC';drawWheel()};
+$('openBtn').onclick=()=>$('openFile').click();$('openFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;let t=await f.text();if(f.name.endsWith('.json')){try{let d=JSON.parse(t);$('entries').value=(d.entries||[]).join('\n');if(d.settings){for(let [k,v] of Object.entries(d.settings))if($(k))$(k).value=v} $('loadBtn').click()}catch{$('entries').value=t}}else $('entries').value=t.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).join('\n');e.target.value=''};
+$('saveBtn').onclick=()=>{let settings={theme:$('theme').value,duration:$('duration').value,bgColor:$('bgColor').value,borderColor:$('borderColor').value,buttonColor:$('buttonColor').value,centerInput:$('centerInput').value,centerColor:$('centerColor').value,maxWheelNames:$('maxWheelNames').value};download(JSON.stringify({entries,settings,backgroundImage,logoData},null,2),'JBC_Roulette_Setup.json','application/json')};
+$('newBtn').onclick=()=>{if(confirm('Start a new roulette? Current entries and results will be cleared.')){$('clearBtn').click()}};
+$('shareBtn').onclick=()=>{let text=`JBC Roulette: ${entries.length} entries loaded.`;if(navigator.share)navigator.share({title:'JBC Roulette',text});else if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>$('spinStatus').textContent='Share summary copied.')};
+$('galleryBtn').onclick=()=>{$('customizeDialog').showModal();$('spinStatus').textContent='Choose a theme in Customize.'};
+$('fullscreenBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
+$('moreBtn').onclick=()=>alert('Tip: Save exports your entries and design settings as a JSON file. Open can load that saved setup.');
+$('imageBtn').onclick=()=>$('wheelImageFile').click();$('wheelImageFile').onchange=e=>readImage(e.target.files[0],d=>{backgroundImage=d;document.body.style.backgroundImage=`url(${d})`;document.body.style.backgroundSize='cover'});
+drawWheel();update();
+</script></body></html>

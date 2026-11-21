@@ -81,6 +81,18 @@ dialog{border:0;border-radius:14px;box-shadow:0 12px 50px #0005;width:min(620px,
     <button id="keepWinnerBtn" class="secondary">Keep in entries</button>
   </div>
 </dialog>
+
+<dialog id="shareDialog">
+  <div class="modalhead"><b>↗ Share this roulette</b><button id="closeShare" class="secondary" type="button">✕</button></div>
+  <div class="modalbody" style="grid-template-columns:1fr">
+    <label class="field full">Roulette title<input id="shareTitle" maxlength="80" value="JBC Roulette" placeholder="Enter a title for this roulette"></label>
+    <p class="note full">Create a link containing the loaded entries and your current roulette design. Anyone with the link can open and spin their own copy.</p>
+    <button id="createShareLink" class="primary" type="button">CREATE SHAREABLE LINK</button>
+    <label class="field full">Share link<input id="shareUrl" type="text" readonly placeholder="Your share link will appear here"></label>
+    <button id="copyShareLink" class="secondary" type="button" disabled>COPY LINK</button>
+    <div id="shareStatus" class="status full" role="status">Create a link to share this roulette with others.</div>
+  </div>
+</dialog>
 <script>
 const $=id=>document.getElementById(id);let entries=[],results=[],busy=false,rotation=0,backgroundImage='',logoData='',pendingWinnerIndex=-1;
 const canvas=$('wheel'),ctx=canvas.getContext('2d');
